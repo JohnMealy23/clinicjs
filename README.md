@@ -15,7 +15,8 @@ grunt assemble
 ``` 
 ... in the root, and a client-side script file will be produced.
 
-A deeper understanding of build processes is never a bad thing.  This being said, this framework allows a developer to know nothing of them to get up and running.  Create controllers, enter a command, and
+A deeper understanding of build processes is never a bad thing.  This being said, this framework allows a developer to know little of what's going on under the hood to get up and running.  Create controllers, assemble the project, and check it in the browser.
+ 
 ## Project Structure
 ### Settings File
 The ./app/app_settings.js file's purpose is to abstract business-specific data from the application. API addresses, application name and so on should be stored in this.
