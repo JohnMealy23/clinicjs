@@ -16,20 +16,21 @@ const getWake = (globalSettings, state, controllers, globalUtilities) => {
 const wakeDecorator = (globalSettings, state, controllers, globalUtilities, appWake) => {
     const wake = function() {
         const coreFn = () => {
+            const wakeReturn = appWake.call(this, ...arguments);
             if(this.elems.body) {
                 this.elems.body.classList.remove(globalSettings.cssClasses.hidden);
             }
             if(this.settings.title && this.settings.route) {
                 history.pushState(state, `${globalSettings.appName} - ${this.settings.title}`, this.settings.route);
             }
-            return appWake.call(this, ...arguments);
+            return wakeReturn;
         };
         // Init the first time wake is run:
         if(this.state.initted !== true) {
-            this.state.initted = true;
             return this.init().then(() => {
                 return coreFn(...arguments);
             });
+            this.state.initted = true;
         } else {
             // Since init always returns a promise, wake will always return a promise
             // Show body of controller, if exists

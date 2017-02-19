@@ -84,6 +84,25 @@ For instance, if you have created a controller at ./app/controllers/basic_questi
 #### globalUtilities 
 Contents of the ./app/utilities file
 
-
-
-
+#### Example Controller Files
+By running...
+```
+grunt newcontroller --name=hello_there
+```
+and
+```
+grunt newcontroller --name=goodbye_now
+```
+you will find that your ./app/controllers folder now has two directories within it - hello_there and goodbye_now.
+ 
+Each of these directories has the following contents:
+* utilities/
+  * proto_utility.js
+* index.js
+* init.js
+* settings.js
+* sleep.js
+* utitilies.js
+* wake.js
+ 
+Begin by opening the settings.js files, and filling in some required data.

@@ -342,6 +342,7 @@ const controllers = {};
 const routes = {}; 
 const state = {}; 
 const globalUtilities = globalUtilitiesSingleton(appSettings, state, controllers, routes);
+let controllerKey;
 ${getControllerInstantiationString(controllerSpecs)}
 Object.assign(routes, globalUtilities.getRoutes(controllers));
 controllers.default = globalUtilities.getDefaultController(controllers);
@@ -367,7 +368,8 @@ globalUtilities.appInit(routes);
             controllerInstantiationString += `
 import ${controllerSpec.varName}Init from './${settings.controllersDirName}/${controllerSpec.filename}';
 const ${controllerSpec.varName} = ${controllerSpec.varName}Init(appSettings, state, controllers, globalUtilities);
-controllers.${controllerSpec.varName} = ${controllerSpec.varName};
+controllerKey = ${controllerSpec.varName}.key || '${controllerSpec.varName}';
+controllers[controllerKey] = ${controllerSpec.varName};
             `;
             return controllerInstantiationString;
         }, '');

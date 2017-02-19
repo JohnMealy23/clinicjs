@@ -10,11 +10,12 @@ const sleepDecorator = (globalSettings, state, controllers, globalUtilities, app
         if(this.state.awake === false) {
             return false;
         }
+        const sleepReturn = appSleep(...arguments);
         this.state.awake = false;
         if(this.elems.body) {
             this.elems.body.classList.add(globalSettings.cssClasses.hidden);
         }
-        return appSleep(...arguments);
+        return sleepReturn;
     };
     return sleep;
 };
