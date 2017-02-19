@@ -18,6 +18,8 @@ grunt assemble
 A deeper understanding of build processes is never a bad thing.  This being said, this framework allows a developer to know little of what's going on under the hood to get up and running.  Create controllers, assemble the project, and check it in the browser.
  
 ## Project Structure
+The app developer need only attend to the files in the ./app directory.  These files include...
+
 ### Settings File
 The ./app/app_settings.js file's purpose is to abstract business-specific data from the application. API addresses, application name and so on should be stored in this.
 
