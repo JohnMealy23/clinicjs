@@ -27,9 +27,9 @@ The ./app/app_settings.js file's purpose is to abstract business-specific data f
 For the time being, this file contains an object literal of all functions that will need to be shared across controllers.
 
 ### Controllers
-Each controller is located in the /app/controllers folder.  Each controller is a conglomerate of standardized files, which produces the functionality with which other controllers can manipulate it.
+Each controller is located in the /app/controllers directory.  Each controller is represented by a directory with the controller's name, containing a conglomerate of standardized files.  At assemble time, these files produce the functionality with which other controllers can manipulate your controller.
 
-When accessing another controller, the following API will be present:
+When accessing a controller, the following API will be present:
 
 * `init()`: Will only be run once per controller.  Collects required DOM nodes, and prepares the controllers dependencies.
 * `sleep()`: De-activates a controller. Should be used to release unneeded objects from memory, and remove the controller's view components from the GUI, if necessary.
@@ -42,7 +42,7 @@ When accessing another controller, the following API will be present:
         * `myController.route` = 'myroute' will be accessed by mysite.com/myroute.
     * `elementIds`: A shallow object literal. Each key will become a key in the contoller's
 
-### Adding a Controller
+### Creating a Controller
 To create a new controller, navigate to the root directory in your terminal, and input:
 ```
 grunt newcontroller --name={controllers_name}
