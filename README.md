@@ -2,7 +2,18 @@
 ## Overview
 This is a moderately opinionated framework, designed to get the client-side application up and running quickly, and in a structured-yet-not-restrictive fashion.
 
-At minimum, the developer only needs to populate standardized functions in the `/src/controllers/` directory, and write the corresponding HTML in the index.html file.  The app developer will only need to run `grunt assemble` in the root, and a client-side script file will be produced.
+At minimum, the developer only needs to populate standardized functions in the `/app/controllers/` directory with the following command...
+ 
+```
+grunt newcontroller --name={controllers_name}
+```
+... and write the corresponding HTML in the index.html file.  
+
+The app developer will then need to run...
+```
+grunt assemble
+``` 
+... in the root, and a client-side script file will be produced.
 
 A deeper understanding of build processes is never a bad thing.  This being said, this framework allows a developer to know nothing of them to get up and running.  Create controllers, enter a command, and
 ## Project Structure
@@ -28,8 +39,12 @@ When accessing another controller, the following API will be present:
         * `myController.route` = 'myroute' will be accessed by mysite.com/myroute.
     * `elementIds`: A shallow object literal. Each key will become a key in the contoller's
 
-### Building a Controller
-To create a new controller, navigate to the root directory in your terminal, and input `grunt newcontroller --name={controller's name}`.  This will produce a new directory in the ./app/controllers directory.  Inside this directory are the skeleton files for everything the controller will need to function.  
+### Adding a Controller
+To create a new controller, navigate to the root directory in your terminal, and input:
+```
+grunt newcontroller --name={controllers_name}
+```
+ This will produce a new directory in the ./app/controllers directory.  Inside this directory are the skeleton files for everything the controller will need to function.  
 
 The wake, sleep and init files all contain an anonymous function.  This can be populated by the app developer with all of the necessary functionality.  Within this anonymous function, the app developer has access to call the following objects:
 
