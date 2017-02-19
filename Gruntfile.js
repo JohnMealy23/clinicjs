@@ -72,6 +72,12 @@ module.exports = function(grunt) {
                 Logger.debug('---------------------------------------');
                 Logger.debug('Assembly complete');
                 done();
+            })
+            .catch((error) => {
+                Logger.debug('---------------------------------------');
+                Logger.error('assemble failed', {error});
+                Logger.debug('Commencing cleanup');
+                grunt.file.delete(settings.tempBuildDest);
             });
     });
 
@@ -135,6 +141,9 @@ module.exports = function(grunt) {
     const getControllerPaths = (controllerLocation) => {
         Logger.debug(`starting getControllerPaths`);
         const controllerNames = fs.readdirSync(controllerLocation);
+        if(controllerNames.length === 0) {
+            throw new Error(`No controllers found in ${controllerLocation}. Please run \`grunt newcontroller name=your-controller-name\` to create a controller.`);
+        }
         Logger.debug(`Creating controllers for ${controllerNames.join(', ')}`);
         return controllerNames.map((name) => {
             const location = `${controllerLocation}/${name}`;
