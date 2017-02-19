@@ -21,7 +21,7 @@ const wakeDecorator = (globalSettings, state, controllers, globalUtilities, appW
             }
             if(this.settings.title && this.settings.route) {
                 console.warn("TODO: Turn on page history");
-                // history.pushState(state, `${globalSettings.appName} - ${this.settings.title}`, this.settings.route);
+                history.pushState(state, `${globalSettings.appName} - ${this.settings.title}`, this.settings.route);
             }
             return appWake.call(this, ...arguments);
         };
