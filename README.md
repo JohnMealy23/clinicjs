@@ -13,7 +13,7 @@ The ./app/app_settings.js file's purpose is to abstract business-specific data f
 For the time being, this file contains an object literal of all functions that will need to be shared across controllers.
 
 ### Controllers
-Each controller is located in the /src/controllers folder.  Each controller is a conglomerate of standardized files, which produces the functionality with which other controllers can manipulate it.
+Each controller is located in the /app/controllers folder.  Each controller is a conglomerate of standardized files, which produces the functionality with which other controllers can manipulate it.
 
 When accessing another controller, the following API will be present:
 
