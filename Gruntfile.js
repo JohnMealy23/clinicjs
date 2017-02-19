@@ -3,7 +3,7 @@
 const cmd = require('node-cmd');
 const camelCase = require('lodash.camelcase');
 const fs = require('fs');
-const settings = require('./settings');
+const settings = require('./build/settings');
 const Logger = require('js-logger');
 Logger.useDefaults();
 
@@ -42,23 +42,29 @@ module.exports = function(grunt) {
         Logger.setLevel(Logger[logLevel]);
 
         Logger.debug('grunt assemble');
-        // Remove temp artifacts from previous build, if exist:
-        grunt.file.delete(settings.tempBuildDest);
+        // Remove artifacts from previous build, if exist:
+        if(grunt.file.exists(settings.tempBuildDest) === true) {
+            grunt.file.delete(settings.tempBuildDest);
+        }
+        const publicFileLocation = `${settings.distPath}/${settings.distFileName}.js`;
+        if(grunt.file.exists(publicFileLocation) === true) {
+            grunt.file.delete(publicFileLocation);
+        }
         // Create temp location and files:
         fortifyTempLocation(settings.tempBuildDest, settings.controllersSrc);
         wrapControllers(settings.controllersTemp, settings.wrapperSrc)
             .then(() => {
-                const path = settings.controllersTemp;
                 Logger.debug('---------------------------------------');
                 Logger.debug('Commencing to get filename variable map');
+                const path = settings.controllersTemp;
                 return getFilenames(path);
             })
             .then(getFilenameVarMap)
             .then(getFileString)
             .then((fileString) => {
-                const path = `${settings.tempBuildDest}/index.js`;
                 Logger.debug('---------------------------------------');
                 Logger.debug('Commencing to write file');
+                const path = `${settings.tempBuildDest}/index.js`;
                 return writeFile(path, fileString);
             })
             .then(createUtilitiesIndexes)
@@ -66,9 +72,6 @@ module.exports = function(grunt) {
                 Logger.debug('---------------------------------------');
                 Logger.debug('Commencing build');
                 grunt.task.run('build');
-                // Logger.debug('---------------------------------------');
-                // Logger.debug('Commencing cleanup');
-                // grunt.file.delete(settings.tempBuildDest);
                 Logger.debug('---------------------------------------');
                 Logger.debug('Assembly complete');
                 done();
@@ -402,6 +405,12 @@ controllers.${controllerSpec.varName} = ${controllerSpec.varName};
                     options: {
                         transform: [["babelify", { "presets": ["es2015"] }]],
                         watch: true
+                    }
+                },
+                options: {
+                    postBundleCB: (err, src, next) => {
+                        grunt.file.delete(settings.tempBuildDest);
+                        next(err, src);
                     }
                 }
             }
