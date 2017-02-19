@@ -16,16 +16,16 @@ const getInit = (globalSettings, state, controllers, globalUtilities) => {
  * @returns {function()}
  */
 
-const initDecorator = (globalSettings, state, controllers, globalUtilities, appInit) => {
+const initDecorator = function(globalSettings, state, controllers, globalUtilities, appInit) {
     const init = function() {
         // Gather elements for this controller
         this.elems = globalUtilities.getElems(this.settings.elementIds);
         this.state.initted = true;
-
+        const appInitReturn = appInit.call(this, ...arguments);
         // Since some init processes will need to return promises,
         // all init processes will return promises, so that we
         // can be consistent in how wake deals with init.
-        return Promise.resolve(appInit.call(this, ...arguments));
+        return Promise.resolve(appInitReturn);
     };
     return init;
 };

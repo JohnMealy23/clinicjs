@@ -21,8 +21,9 @@ const wakeDecorator = (globalSettings, state, controllers, globalUtilities, appW
                 this.elems.body.classList.remove(globalSettings.cssClasses.hidden);
             }
             if(this.settings.title && this.settings.route) {
-                history.replaceState(state, `${globalSettings.appName} - ${this.settings.title}`, this.settings.route);
+                history.pushState(state, `${globalSettings.appName} - ${this.settings.title}`, this.settings.route);
             }
+            this.state.awake = true;
             return wakeReturn;
         }.bind(this, ...arguments);
         // Init the first time wake is run:
@@ -30,7 +31,6 @@ const wakeDecorator = (globalSettings, state, controllers, globalUtilities, appW
             return this.init().then(() => {
                 return coreFn();
             });
-            this.state.initted = true;
         } else {
             // Since init always returns a promise, wake will always return a promise
             // Show body of controller, if exists
