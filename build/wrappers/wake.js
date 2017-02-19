@@ -15,20 +15,20 @@ const getWake = (globalSettings, state, controllers, globalUtilities) => {
  */
 const wakeDecorator = (globalSettings, state, controllers, globalUtilities, appWake) => {
     const wake = function() {
-        const coreFn = () => {
+        const coreFn = function() {
             const wakeReturn = appWake.call(this, ...arguments);
             if(this.elems.body) {
                 this.elems.body.classList.remove(globalSettings.cssClasses.hidden);
             }
             if(this.settings.title && this.settings.route) {
-                history.pushState(state, `${globalSettings.appName} - ${this.settings.title}`, this.settings.route);
+                history.replaceState(state, `${globalSettings.appName} - ${this.settings.title}`, this.settings.route);
             }
             return wakeReturn;
-        };
+        }.bind(this, ...arguments);
         // Init the first time wake is run:
         if(this.state.initted !== true) {
             return this.init().then(() => {
-                return coreFn(...arguments);
+                return coreFn();
             });
             this.state.initted = true;
         } else {
