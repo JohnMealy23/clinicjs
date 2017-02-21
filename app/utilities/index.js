@@ -158,7 +158,7 @@ const globalUtilitiesSingleton = ($settings, controllers) => {
             const bodyId = controllers[key].settings.elementIds.body;
             const body = document.getElementById(bodyId);
             if(body) {
-                body.classList.add('app-body');
+                body.classList.add('controller-body');
                 body.classList.add($settings.cssClasses.hidden);
             }
         });
