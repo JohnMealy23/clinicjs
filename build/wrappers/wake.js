@@ -21,7 +21,7 @@ const wakeDecorator = (globalSettings, state, controllers, globalUtilities, appW
                 this.elems.body.classList.remove(globalSettings.cssClasses.hidden);
             }
             if(this.settings.title && this.settings.route) {
-                // history.pushState(state, `${globalSettings.appName} - ${this.settings.title}`, this.settings.route);
+                history.pushState(state, `${globalSettings.appName} - ${this.settings.title}`, this.settings.route);
             }
             this.state.awake = true;
             return wakeReturn;
