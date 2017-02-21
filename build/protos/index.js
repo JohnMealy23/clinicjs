@@ -11,7 +11,7 @@ const controllerInit = (globalSettings, state, controllers, globalUtilities) => 
     controller.init = getInit(globalSettings, state, controllers, globalUtilities);
     controller.wake = getWake(globalSettings, state, controllers, globalUtilities);
     controller.sleep = getSleep(globalSettings, state, controllers, globalUtilities);
-    controller.utilities = getUtilities(globalSettings, state, controllers, globalUtilities);
+    controller.utilities = getUtilities.call(controller, globalSettings, state, controllers, globalUtilities);
 
     controller.default = settings.isDefault || false;
 
