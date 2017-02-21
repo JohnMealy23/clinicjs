@@ -30,18 +30,15 @@ const globalUtilitiesSingleton = ($settings, controllers) => {
                 const randomName = `callback_${random}`;
                 apiSrc += `&callback=${randomName}`;
                 window[randomName] = () => {
-                    resolve();
+                    resolve(arguments);
                     delete window[randomName];
                 };
             } else {
-                script.onload = () => {
-                    resolve();
-                }
+                script.addEventListener('load', () => resolve());
             }
             script.async = true;
             script.defer = true;
             script.src = apiSrc;
-            script.addEventListener('load', () => resolve());
             script.addEventListener('error', () => reject('Error loading script.'));
             script.addEventListener('abort', () => reject('Script loading aborted.'));
             document.body.appendChild(script);
