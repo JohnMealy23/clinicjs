@@ -71,7 +71,8 @@ const globalUtilitiesSingleton = ($settings, controllers) => {
     };
 
     globalUtilities.makeError = (file = '', functionName = '', message = '', error = '') => {
-        throw new Error(`file: ${file} || function: ${functionName} || message: ${message}` || error);
+        const errorObj = { file, functionName, message, error };
+        throw new Error(errorObj);
     };
 
     globalUtilities.getApiEndpoint= (key = 'an endpoint to this function call and') => {
