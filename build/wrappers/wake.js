@@ -21,16 +21,21 @@ const wakeDecorator = (globalSettings, state, controllers, globalUtilities, appW
                 this.elems.body.classList.remove(globalSettings.cssClasses.hidden);
             }
             if(this.settings.title && this.settings.route) {
-                history.pushState(state, `${globalSettings.appName} - ${this.settings.title}`, this.settings.route);
+                // history.pushState(state, `${globalSettings.appName} - ${this.settings.title}`, this.settings.route);
             }
             this.state.awake = true;
             return wakeReturn;
         }.bind(this, ...arguments);
         // Init the first time wake is run:
         if(this.state.initted !== true) {
-            return this.init().then(() => {
-                return coreFn();
-            });
+            return this.init()
+                .then(() => {
+                    return coreFn();
+                })
+                .catch((error) => {
+                    globalUtilities.makeError(`${this.settings.key}: wake.js`, 'wake', 'Failed to wake.  Error:', error);
+                });
+            this.state.initted = true;
         } else {
             // Since init always returns a promise, wake will always return a promise
             // Show body of controller, if exists

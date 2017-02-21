@@ -21,17 +21,26 @@ const globalUtilitiesSingleton = ($settings, controllers) => {
         return Math.random();
     };
 
-    globalUtilities.injectMap = (apiUrl, cb) => {
+    globalUtilities.scriptInject = (url, hasCallback) => {
         return new Promise((resolve, reject) => {
-            const randomName = `callback_${globalUtilities.getRandom()}`;
             const script = document.createElement('script');
-            window[randomName] = () => {
-                cb();
-                delete window[randomName];
-            };
+            let apiSrc = url;
+            if(hasCallback) {
+                const random = Math.round(globalUtilities.getRandom() * 1000);
+                const randomName = `callback_${random}`;
+                apiSrc += `&callback=${randomName}`;
+                window[randomName] = () => {
+                    resolve();
+                    delete window[randomName];
+                };
+            } else {
+                script.onload = () => {
+                    resolve();
+                }
+            }
             script.async = true;
             script.defer = true;
-            script.src = `${apiUrl}?key=${$settings.map.key}&callback=${randomName}`;
+            script.src = apiSrc;
             script.addEventListener('load', () => resolve());
             script.addEventListener('error', () => reject('Error loading script.'));
             script.addEventListener('abort', () => reject('Script loading aborted.'));
@@ -64,8 +73,8 @@ const globalUtilitiesSingleton = ($settings, controllers) => {
         }, {});
     };
 
-    globalUtilities.makeError = (file = '', functionName = '', message = '') => {
-        throw new Error(`file: ${file} || function: ${functionName} || message: ${message}`);
+    globalUtilities.makeError = (file = '', functionName = '', message = '', error = '') => {
+        throw new Error(`file: ${file} || function: ${functionName} || message: ${message}` || error);
     };
 
     globalUtilities.getApiEndpoint= (key = 'an endpoint to this function call and') => {
@@ -81,7 +90,6 @@ const globalUtilitiesSingleton = ($settings, controllers) => {
 
 
             return resolve(responseModel);
-
 
 
             const {url, body, queryObj} = options;
@@ -148,11 +156,14 @@ const globalUtilitiesSingleton = ($settings, controllers) => {
     };
 
     globalUtilities.appInit = (controllers) => {
-        const children = document.getElementById($settings.elemIds.root).getElementsByTagName("div");
-        [...children].map((node) => {
-            node.classList.add($settings.cssClasses.hidden);
+        Object.keys(controllers).map((key) => {
+            const bodyId = controllers[key].settings.elementIds.body;
+            const body = document.getElementById(bodyId);
+            if(body) {
+                body.classList.add('app-body');
+                body.classList.add($settings.cssClasses.hidden);
+            }
         });
-        return children;
     };
 
     return globalUtilities;

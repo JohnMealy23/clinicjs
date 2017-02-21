@@ -302,10 +302,11 @@ module.exports = function(grunt) {
                             let instantiationString = `
 const utilityInits = {};\n
 const utilitiesInit = function(appSettings, state, controllers, routes) {
-    return Object.keys(utilityInits).reduce((utilities, utilityName) => {
+    const utilityWrap = function(utilities, utilityName) {
           utilities[utilityName] = utilityInits[utilityName].call(this, appSettings, state, controllers, routes);
           return utilities;
-    }, {});
+    }.bind(this)
+    return Object.keys(utilityInits).reduce(utilityWrap, {});
 };
 `;
                             instantiationString += fileVarMap.reduce((instantiationString, fileVars) => {
@@ -322,9 +323,9 @@ utilityInits.${fileVars.varName} = ${fileVars.varName};
                             const path = `${utilitiesPath}/index.js`;
                             writeFile(path, fileString);
                         });
-                    })
+                })
 
-                });
+            });
     };
 
     const getFileString = (controllerSpecs) => {
