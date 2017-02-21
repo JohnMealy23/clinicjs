@@ -102,7 +102,6 @@ Each of these directories has the following contents:
 * init.js
 * settings.js
 * sleep.js
-* utitilies.js
 * wake.js
  
 Begin by opening the settings.js files, and filling in some required data.

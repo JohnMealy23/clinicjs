@@ -122,7 +122,13 @@ module.exports = function(grunt) {
                         Logger.debug('wrapControllers', child.name);
                         return wrapperFilename.indexOf(child.name) > -1;
                     });
-                    if(controllerItem.children !== null) {
+                    if(!controllerItem) {
+                        // No app file was found to correspond to this wrapper.  Transfer the wrapper over directly:
+                        const src = `${settings.wrapperSrc}/${wrapperFilename}`;
+                        const dest = `${controllerSpec.dest}/${wrapperFilename}`;
+                        const conversionFunction = getConversionFunction(settings.replaceToken, '()=>{}');
+                        grunt.file.copy(src, dest, conversionFunction);
+                    } else if(controllerItem.children !== null) {
                         // If the component has children, wrap each child in a common wrapper:
                         Logger.debug('wrapControllers', 'controllerItem has children', controllerItem);
                         return controllerItem.children.map((childSpec) => {
