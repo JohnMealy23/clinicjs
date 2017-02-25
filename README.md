@@ -1,3 +1,6 @@
+# Work in Progress
+Please note that this project is still under development.  Tweaks will be constant.  Please feel free to ask questions, make recommentations, and submit pull requests.  Thanks much!
+
 # Clinic JS
 ## Overview
 This is a moderately opinionated framework, designed to get the client-side application up and running quickly, and in a structured-yet-not-restrictive fashion.
