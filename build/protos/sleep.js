@@ -22,15 +22,15 @@
 `this.state.awake` - Turns to true when controller is awake, and false when asleep
 `this.state.initted` - Is false until controller is initted, then turns to true
 
- # globalSettings
+ # globals.settings
  Contents of the ./app/app_settings.js JSON
 
- # controllers
+ # globals.controllers
  An object literal of all controllers.  Each key is a camel-cased version of your controller's directory name.
 
- For instance, if you have created a controller at ./app/controllers/basic_questions, access its wake function from any controller with `controllers.basicQuestions.wake()`
+ For instance, if you have created a controller at ./app/controllers/basic_questions, access its wake function from any controller with `globals.controllers.basicQuestions.wake()`
 
- # globalUtilities
+ # globals.utilities
  Contents of the ./app/utilities file
  */
 
