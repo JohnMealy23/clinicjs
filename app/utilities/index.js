@@ -3,8 +3,8 @@ import responseModel from '../models/clinic_query_response';
 let initted = false;
 const globalUtilities = {};
 
-const globalUtilitiesSingleton = ($settings, controllers) => {
-    if($settings === undefined) {
+const globalUtilitiesSingleton = (globals) => {
+    if(globals.settings === undefined) {
         // If settings are undefined,
         throw new Error(`file: ${file} || function: constructor || message: Settings are required`);
     } else if(initted === true) {
@@ -51,9 +51,9 @@ const globalUtilitiesSingleton = ($settings, controllers) => {
     };
 
     globalUtilities.sleepAllExcept = (exception) => {
-        Object.keys(controllers).map((key) => {
-            if(controllers[key].name !== exception) {
-                controllers[key].sleep();
+        Object.keys(globals.controllers).map((key) => {
+            if(globals.controllers[key].name !== exception) {
+                globals.controllers[key].sleep();
             }
         });
     };
@@ -71,16 +71,15 @@ const globalUtilitiesSingleton = ($settings, controllers) => {
     };
 
     globalUtilities.makeError = (file = '', functionName = '', message = '', error = '') => {
-        const errorObj = { file, functionName, message, error };
-        throw new Error(errorObj);
+        throw new Error(`file: ${file} || function: ${functionName} || message: ${message}` || error);
     };
 
     globalUtilities.getApiEndpoint= (key = 'an endpoint to this function call and') => {
-        const endpoint = $settings.api.endpoints[key];
+        const endpoint = globals.settings.api.endpoints[key];
         if(endpoint === undefined) {
             globalUtilities.makeError('globalUtilities', 'getRoutes', `Endpoint not defined. Please add ${key} to your app_settings.js file.`);
         }
-        return `${$settings.api.protocol}://${$settings.api.domain}/${$settings.api.version}/${endpoint}/`;
+        return `${globals.settings.api.protocol}://${globals.settings.api.domain}/${globals.settings.api.version}/${endpoint}/`;
     };
 
     globalUtilities.ajax = (options) => {
@@ -158,8 +157,8 @@ const globalUtilitiesSingleton = ($settings, controllers) => {
             const bodyId = controllers[key].settings.elementIds.body;
             const body = document.getElementById(bodyId);
             if(body) {
-                body.classList.add('controller-body');
-                body.classList.add($settings.cssClasses.hidden);
+                body.classList.add('app-body');
+                body.classList.add(globals.settings.cssClasses.hidden);
             }
         });
     };

@@ -105,3 +105,10 @@ Each of these directories has the following contents:
 * wake.js
  
 Begin by opening the settings.js files, and filling in some required data.
+
+
+#TODOs:
+* Finish README.md :)
+* Break global utilities into for-use-in-app and private.
+* Build unit test portion of framework
+  *  

@@ -80,7 +80,7 @@ module.exports = function(grunt) {
                 Logger.debug('---------------------------------------');
                 Logger.error('assemble failed', {error});
                 Logger.debug('Commencing cleanup');
-                grunt.file.delete(settings.tempBuildDest);
+                // grunt.file.delete(settings.tempBuildDest);
             });
     });
 
@@ -120,6 +120,7 @@ module.exports = function(grunt) {
                     // Get app component file that corresponds to this wrapper file:
                     const controllerItem = controllerSpec.children.find((child) => {
                         Logger.debug('wrapControllers', child.name);
+                        console.log('wrapControllers', {wrapperFilename}, child.name);
                         return wrapperFilename.indexOf(child.name) > -1;
                     });
                     if(!controllerItem) {
@@ -307,9 +308,9 @@ module.exports = function(grunt) {
                         .then((fileVarMap) => {
                             let instantiationString = `
 const utilityInits = {};\n
-const utilitiesInit = function(appSettings, state, controllers, routes) {
+const utilitiesInit = function(globals, routes) {
     const utilityWrap = function(utilities, utilityName) {
-          utilities[utilityName] = utilityInits[utilityName].call(this, appSettings, state, controllers, routes);
+          utilities[utilityName] = utilityInits[utilityName].call(this, globals);
           return utilities;
     }.bind(this)
     return Object.keys(utilityInits).reduce(utilityWrap, {});
@@ -345,21 +346,23 @@ utilityInits.${fileVars.varName} = ${fileVars.varName};
 import globalUtilitiesSingleton from './utilities';
 import appSettings from './app_settings';
 
-const controllers = {};
 const routes = {}; 
-const state = {}; 
-const globalUtilities = globalUtilitiesSingleton(appSettings, state, controllers, routes);
+const globals = {};
+globals.settings = appSettings;
+globals.state = {}; 
+globals.utilities = globalUtilitiesSingleton(globals, routes);
+globals.controllers = {};
 let controllerKey;
 ${getControllerInstantiationString(controllerSpecs)}
-Object.assign(routes, globalUtilities.getRoutes(controllers));
-controllers.default = globalUtilities.getDefaultController(controllers);
-if(!controllers.default) {
-    globalUtilities.makeError('assembly.js', 'getFileString', 'No default controller was indicated.');
+Object.assign(routes, globals.utilities.getRoutes(globals.controllers));
+globals.controllers.default = globals.utilities.getDefaultController(globals.controllers);
+if(!globals.controllers.default) {
+    globals.utilities.makeError('index.js', 'getFileString', 'No default controller was indicated.');
 }
 
 // Start the machine:
-globalUtilities.appInit(routes);
-(routes[globalUtilities.getRoute()] || controllers.default).wake();
+globals.utilities.appInit(routes);
+(routes[globals.utilities.getRoute()] || globals.controllers.default).wake();
     `;
 
         return fileString;
@@ -374,9 +377,9 @@ globalUtilities.appInit(routes);
         const controllerInstantiationString = controllerSpecs.reduce((controllerInstantiationString, controllerSpec) => {
             controllerInstantiationString += `
 import ${controllerSpec.varName}Init from './${settings.controllersDirName}/${controllerSpec.filename}';
-const ${controllerSpec.varName} = ${controllerSpec.varName}Init(appSettings, state, controllers, globalUtilities);
-controllerKey = ${controllerSpec.varName}.key || '${controllerSpec.varName}';
-controllers[controllerKey] = ${controllerSpec.varName};
+const ${controllerSpec.varName} = ${controllerSpec.varName}Init(globals);
+controllerKey = ${controllerSpec.varName}.settings.key || '${controllerSpec.varName}';
+globals.controllers[controllerKey] = ${controllerSpec.varName};
             `;
             return controllerInstantiationString;
         }, '');
@@ -418,7 +421,7 @@ controllers[controllerKey] = ${controllerSpec.varName};
                 },
                 options: {
                     postBundleCB: (err, src, next) => {
-                        grunt.file.delete(settings.tempBuildDest);
+                        // grunt.file.delete(settings.tempBuildDest);
                         next(err, src);
                     }
                 }

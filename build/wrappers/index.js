@@ -1,17 +1,19 @@
 import getInit from './init';
 import getWake from './wake';
 import getSleep from './sleep';
+import getUpdate from './update';
 import settings from './settings';
 import getUtilities from './utilities';
 
-const controllerInit = (globalSettings, state, controllers, globalUtilities) => {
+const controllerInit = (globals) => {
     const controller = {};
     controller.elems = null; // Will be populated by the init step.
     controller.settings = settings;
-    controller.init = getInit(globalSettings, state, controllers, globalUtilities);
-    controller.wake = getWake(globalSettings, state, controllers, globalUtilities);
-    controller.sleep = getSleep(globalSettings, state, controllers, globalUtilities);
-    controller.utilities = getUtilities.call(controller, globalSettings, state, controllers, globalUtilities);
+    controller.init = getInit(globals);
+    controller.wake = getWake(globals);
+    controller.update = getUpdate(globals);
+    controller.sleep = getSleep(globals);
+    controller.utilities = getUtilities.call(controller, globals);
 
     controller.default = settings.isDefault || false;
 
