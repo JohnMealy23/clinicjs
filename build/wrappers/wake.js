@@ -33,9 +33,14 @@ const wakeDecorator = (globals, appWake) => {
                     return coreFn();
                 })
                 .catch((error) => {
-                    globals.utilities.makeError(`${this.settings.key}: wake.js`, 'wake', 'Failed to wake.  Error:', error);
+                    const logObj = {
+                        file: `${this.settings.key}: wake.js`,
+                        function: 'wake',
+                        message: 'Failed to wake.',
+                        error
+                    };
+                    globals.utilities.log(logObj);
                 });
-            this.state.initted = true;
         } else {
             // Since init always returns a promise, wake will always return a promise
             // Show body of controller, if exists

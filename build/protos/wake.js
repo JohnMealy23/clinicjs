@@ -34,8 +34,8 @@
  Contents of the ./app/utilities file
  */
 
-(function(/* Your args here */) {
+function wake(/* Your args here */) {
 
 
 
-});
+};

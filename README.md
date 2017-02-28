@@ -111,4 +111,4 @@ Begin by opening the settings.js files, and filling in some required data.
 * Finish README.md :)
 * Break global utilities into for-use-in-app and private.
 * Build unit test portion of framework
-  *  
+* Devise method for including NPMs scoped to individual controllers
