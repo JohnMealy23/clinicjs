@@ -90,6 +90,7 @@ module.exports = function(grunt) {
         grunt.file.mkdir(settings.tempBuildDest);
         grunt.file.copy(settings.controllersSrc, `${settings.tempBuildDest}/${settings.controllersDirName}`);
         grunt.file.copy(settings.modelSrc, `${settings.tempBuildDest}/${settings.modelDirName}`);
+        grunt.file.copy(settings.decoratorSrc, `${settings.tempBuildDest}/${settings.decoratorDirName}`);
         grunt.file.copy(settings.utilitiesSrc, `${settings.tempBuildDest}/${settings.utilitiesDirName}`);
         grunt.file.copy(`${settings.appSrc}/${settings.appSettingsFilename}`, `${settings.tempBuildDest}/${settings.appSettingsFilename}`);
     };
