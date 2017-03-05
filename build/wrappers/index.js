@@ -11,8 +11,8 @@ const controllerInit = (globals) => {
     controller.settings = settings;
     controller.init = getInit(globals);
     controller.wake = getWake(globals);
-    controller.update = getUpdate(globals);
     controller.sleep = getSleep(globals);
+    controller.update = getUpdate.call(controller, globals);
     controller.utilities = getUtilities.call(controller, globals);
 
     controller.default = settings.isDefault || false;

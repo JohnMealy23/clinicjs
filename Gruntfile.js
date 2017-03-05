@@ -90,6 +90,7 @@ module.exports = function(grunt) {
         grunt.file.mkdir(settings.tempBuildDest);
         grunt.file.copy(settings.controllersSrc, `${settings.tempBuildDest}/${settings.controllersDirName}`);
         grunt.file.copy(settings.modelSrc, `${settings.tempBuildDest}/${settings.modelDirName}`);
+        grunt.file.copy(settings.decoratorSrc, `${settings.tempBuildDest}/${settings.decoratorDirName}`);
         grunt.file.copy(settings.utilitiesSrc, `${settings.tempBuildDest}/${settings.utilitiesDirName}`);
         grunt.file.copy(`${settings.appSrc}/${settings.appSettingsFilename}`, `${settings.tempBuildDest}/${settings.appSettingsFilename}`);
     };
@@ -345,11 +346,12 @@ utilityInits.${fileVars.varName} = ${fileVars.varName};
 
 import globalUtilitiesSingleton from './utilities';
 import appSettings from './app_settings';
+import model from './models';
 
 const routes = {}; 
 const globals = {};
 globals.settings = appSettings;
-globals.state = {}; 
+globals.state = model; 
 globals.utilities = globalUtilitiesSingleton(globals, routes);
 globals.controllers = {};
 let controllerKey;
@@ -357,11 +359,17 @@ ${getControllerInstantiationString(controllerSpecs)}
 Object.assign(routes, globals.utilities.getRoutes(globals.controllers));
 globals.controllers.default = globals.utilities.getDefaultController(globals.controllers);
 if(!globals.controllers.default) {
-    globals.utilities.makeError('index.js', 'getFileString', 'No default controller was indicated.');
+    const logObj = {
+        file: 'index.js', 
+        function: 'getFileString', 
+        message: 'No default controller was indicated.',
+        level: 'error'
+    };
+    globals.utilities.log(logObj);
 }
 
 // Start the machine:
-globals.utilities.appInit(routes);
+globals.utilities.appInit(globals.controllers);
 (routes[globals.utilities.getRoute()] || globals.controllers.default).wake();
     `;
 

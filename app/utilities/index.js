@@ -1,4 +1,3 @@
-import responseModel from '../models/clinic_query_response';
 
 let initted = false;
 const globalUtilities = {};
@@ -21,6 +20,17 @@ const globalUtilitiesSingleton = (globals) => {
         return Math.random();
     };
 
+    globalUtilities.getQueryObj = () => {
+        const qString = window.location.search;
+        const qArray = qString.slice(1,0).split('&');
+        const qObject = qArray.reduce((qObj, pairString) => {
+            const pairArray = pairString.split('=');
+            qObj[pairArray[0]] = pairArray[1] || true;
+            return qObj;
+        }, {});
+        return qObject;
+    };
+
     globalUtilities.scriptInject = (url, hasCallback) => {
         return new Promise((resolve, reject) => {
             const script = document.createElement('script');
@@ -29,7 +39,7 @@ const globalUtilitiesSingleton = (globals) => {
                 const random = Math.round(globalUtilities.getRandom() * 1000);
                 const randomName = `callback_${random}`;
                 apiSrc += `&callback=${randomName}`;
-                window[randomName] = () => {
+                window[randomName] = function() {
                     resolve(arguments);
                     delete window[randomName];
                 };
@@ -60,45 +70,78 @@ const globalUtilitiesSingleton = (globals) => {
 
     globalUtilities.getElems = (idsObj) => {
         return Object.keys(idsObj).reduce((elemsObj, key) => {
-            const elem = document.getElementById(idsObj[key]);
-            if(elem === null) {
-                globalUtilities.makeError('globalUtilities', 'getElems', `Required DOM node with ID ${idsObj[key]} did not exist`);
-            } else {
-                elemsObj[key] = elem;
+            const id = idsObj[key];
+            if(id) {
+                const elem = document.getElementById(id);
+                if(elem === null) {
+                    globalUtilities.log({
+                        file:'globalUtilities',
+                        function: 'getElems',
+                        message:`Required DOM node with the ID "${id}" did not exist`,
+                        level: 'warn'
+                    });
+                } else {
+                    elemsObj[key] = elem;
+                }
             }
             return elemsObj;
         }, {});
     };
 
-    globalUtilities.makeError = (file = '', functionName = '', message = '', error = '') => {
-        throw new Error(`file: ${file} || function: ${functionName} || message: ${message}` || error);
+    /**
+     *
+     * @param {Object} logObj contains log spec
+     * @param {String} logObj.level indicates severity of log. Acceptable values include `log`, `warn`, `error`.
+     * @param {String} logObj.file name of file where log occurred
+     * @param {String} logObj.function name of function where log occurred
+     * @param {String} logObj.message text of log
+     * @param {Error} logObj.error error object generated for log
+     */
+    globalUtilities.log = (logObj) => {
+        const logString = `file: ${logObj.file} || function: ${logObj.function} || message: ${logObj.message}`;
+        if(logObj.error || logObj.level === 'error') {
+            throw new Error(`${logString}, ${logObj.error}`);
+        } else {
+            const level = logObj.level || 'log';
+            window.console[level](logString);
+        }
     };
 
     globalUtilities.getApiEndpoint= (key = 'an endpoint to this function call and') => {
         const endpoint = globals.settings.api.endpoints[key];
         if(endpoint === undefined) {
-            globalUtilities.makeError('globalUtilities', 'getRoutes', `Endpoint not defined. Please add ${key} to your app_settings.js file.`);
+            const logObj = {
+                file: 'globalUtilities',
+                function: 'getRoutes',
+                message: `Endpoint not defined. Please add ${key} to your app_settings.js file.`
+            };
+            globalUtilities.log(logObj);
         }
-        return `${globals.settings.api.protocol}://${globals.settings.api.domain}/${globals.settings.api.version}/${endpoint}/`;
+        const version = globals.settings.api.version ? `/${globals.settings.api.version}` : '';
+        return `${globals.settings.api.protocol}://${globals.settings.api.domain}${version}${endpoint}/`;
     };
 
     globalUtilities.ajax = (options) => {
         return new Promise((resolve, reject) => {
 
 
-            return resolve(responseModel);
+            return resolve();
 
 
             const {url, body, queryObj} = options;
-            const queryString = (() => {
-                const qString = Object.keys(queryObj).reduce((string, key) => {
+            let qString;
+            if(queryObj) {
+                qString = Object.keys(queryObj).reduce((string, key) => {
                     string += `${key}=${queryObj[key]}&`;
                     return string;
                 }, '?');
-                return qString.substring(0, qString.length-1);
-            })();
+                qString = qString.substring(0, qString.length - 1);
+            } else {
+                qString = '';
+            }
+
             const req = new XMLHttpRequest();
-            req.open('GET', `${url}${queryString}`);
+            req.open('GET', `${url}${qString}`);
             req.onload = function () {
                 logger(req);
                 if (req.status === 200) {
@@ -123,7 +166,12 @@ const globalUtilitiesSingleton = (globals) => {
             return routes;
         },{});
         if(Object.keys(routes).length === 0) {
-            globalUtilities.makeError('assembly.js','getFileString', 'No default controller was indicated.');
+            const logObj = {
+                file: 'assembly.js',
+                function: 'getFileString',
+                message: 'No default controller was indicated.'
+            };
+            globalUtilities.log(logObj);
         }
         return routes;
     };
@@ -146,7 +194,12 @@ const globalUtilitiesSingleton = (globals) => {
                 return evilDoerNames;
             },'');
             const offendingControllersStringTrimmed = offendingControllersString.substr(0, connector.length);
-            globalUtilities.makeError('root/index.js', 'getFileString', `${offendingControllersStringTrimmed} controllers have defaultController === true`);
+            const logObj = {
+                file: 'root/index.js',
+                fundtion: 'getFileString',
+                message: `${offendingControllersStringTrimmed} controllers have defaultController === true`
+            };
+            globalUtilities.log(logObj);
         }
 
         return defaultControllers[0];
