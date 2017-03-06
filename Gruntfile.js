@@ -121,7 +121,6 @@ module.exports = function(grunt) {
                     // Get app component file that corresponds to this wrapper file:
                     const controllerItem = controllerSpec.children.find((child) => {
                         Logger.debug('wrapControllers', child.name);
-                        console.log('wrapControllers', {wrapperFilename}, child.name);
                         return wrapperFilename.indexOf(child.name) > -1;
                     });
                     if(!controllerItem) {
