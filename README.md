@@ -84,6 +84,9 @@ The ./app/app_settings.js file's purpose is to abstract business-specific data f
 ### Utilities
 For the time being, this file contains an object literal of all functions that will need to be shared across controllers.
 
+### Models
+The index.js in this directory should be populated to reflect the global state object of your application.  At run time, this is converted into `globals.state`, and can be accessed and maintained as needed.
+
 ### Controllers
 Each controller is located in the /app/controllers directory.  Each controller is represented by a directory with the controller's name, containing a conglomerate of component files.  At build time, these files produce the functionality with which other controllers can manipulate your controller.
 
