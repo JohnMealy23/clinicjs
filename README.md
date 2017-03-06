@@ -153,6 +153,9 @@ A reference to the controller and its components.
 * `this.state.awake` - Turns to true when controller is awake, and false when asleep
 * `this.state.initted` = Is false until controller is initted, then turns to true
 
+#### globals.state
+This object literal is initially populated by the object in the /app/models/index.js file.  It should be maintained by the app developer to hold the dynamic state of the application.
+
 #### globals.settings
 Contents of the ./app/app_settings.js JSON
 
