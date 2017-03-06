@@ -58,8 +58,13 @@ L controllers{}
 ```
 
 From any one of a controller's methods (`controller_B`'s wake(), for instance), a developer can access any other controller's methods in such a fashion: 
-```globals.controllers.controller_B.wake()```
+
+```
+globals.controllers.controller_B.wake()
+```
+
 and can access it's own methods and properties in the following fashion:
+
 ```
 this.sleep()
 ```
