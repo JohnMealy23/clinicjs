@@ -16,13 +16,13 @@ root
 L app
   L controllers
     L controller_A
-      L utilities
-        L proto_utility.js
       L init.js
       L settings.js
       L sleep.js
       L update.js
       L wake.js
+      L utilities
+        L proto_utility.js
 ```
 Each of these files may then be populated by the application developer as needed, to give their controller the necessary functionality.  At build time, the contents of each of these folders is wrapped in additional functionality, and compiled into a single clinet-side script file.
 
@@ -200,6 +200,7 @@ Begin by opening the settings.js files, and filling in some required data.
 
 #TODOs:
 * Finish README.md :)
+* Integrate Redux
 * Break global utilities into for-use-in-app and private.
 * Build unit test portion of framework
 * Devise method for including NPMs scoped to individual controllers
